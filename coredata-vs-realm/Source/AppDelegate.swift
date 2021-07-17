@@ -10,11 +10,55 @@ import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        /// clean state
+        CoreDataManager.shared.deleteAll()
+        RealmManager.shared.deleteAll()
+        
+//        let sample = SampleData.generate(50000)
+        
+        // MARK:-  Core data metrics
+        
+        // Create & Read
+//        let quantities = [100, 1000, 3000, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000]
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//            for quantity in quantities {
+//                Utilities.measure("CoreData create \(quantity)") {
+//                    let items = Array(sample.prefix(upTo: quantity))
+//                    CoreDataManager.shared.create(items: items)
+//                }
+//
+//                Utilities.measure("CoreData read \(quantity)") {
+//                    CoreDataManager.shared.readAll()
+//                }
+//
+//                CoreDataManager.shared.deleteAll()
+//
+//                do {
+//                    sleep(1)
+//                }
+//            }
+//        }
+        
+        // MARK:- Realm metrics
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//            for quantity in quantities {
+//                Utilities.measure("Realm create \(quantity)") {
+//                    let items = Array(sample.prefix(upTo: quantity))
+//                    RealmManager.shared.upsert(items: items)
+//                }
+//
+//                Utilities.measure("Realm read \(quantity)") {
+//                    RealmManager.shared.readAll()
+//                }
+//
+//                RealmManager.shared.deleteAll()
+//            }
+//        }
+
         return true
     }
 
