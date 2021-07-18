@@ -59,6 +59,40 @@ public class CoreDataManager {
         return successfull
     }
     
+    func upsert(items: [ItemModel]) -> Bool {
+        var successfull = false
+        
+        let taskContext = persistentContainer.newBackgroundContext()
+        
+        let existingItems = CDItem.getItemsByID(itemIDs: items.map{$0.id}, in: taskContext)
+        
+        taskContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        taskContext.performAndWait {
+            
+            for item in items {
+                if existingItems[item.id] == nil {
+                    CDItem.create(item: item, in: taskContext)
+                } else {
+                    existingItems[item.id]?.update(with: item)
+                }
+            }
+            
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                    successfull = true
+                } catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                }
+                taskContext.reset()
+            }
+            
+        }
+        
+        return successfull
+    }
+    
     func update(items: [ItemModel]) -> Bool {
         var successfull = false
         

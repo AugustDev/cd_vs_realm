@@ -23,8 +23,23 @@ extension CDItem {
         newItem.provenance = item.provenance
     }
     
+    func update(with item:ItemModel) {
+        self.artist = item.artist
+        self.title = item.title
+        self.medium = item.medium
+        self.year = item.year
+        self.location = item.location
+        self.provenance = item.provenance
+    }
+    
     /// create list of items
     static func create(items: [ItemModel], in context: NSManagedObjectContext) {
+        for item in items {
+            create(item: item, in: context)
+        }
+    }
+    
+    static func upsert(items: [ItemModel], in context: NSManagedObjectContext) {
         for item in items {
             create(item: item, in: context)
         }
@@ -33,7 +48,7 @@ extension CDItem {
     /// update single item
     static func update(item: ItemModel, in context: NSManagedObjectContext) {
         let request: NSFetchRequest<CDItem> = CDItem.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", item.id)
+        request.predicate = NSPredicate(format: "id == %d", item.id)
         request.fetchLimit = 1
         
         do {
@@ -54,6 +69,7 @@ extension CDItem {
             print("error core data update \(error)")
         }
     }
+    
     
     ///update many items
     static func update(items: [ItemModel], in context: NSManagedObjectContext) {
@@ -87,5 +103,26 @@ extension CDItem {
         }
     }
     
+    static func getItemsByID(itemIDs: [String], in context: NSManagedObjectContext) -> [String: CDItem] {
+        
+        let request: NSFetchRequest<CDItem> = CDItem.fetchRequest()
+        request.predicate = NSPredicate(format: "id IN %@", itemIDs)
+        
+        do {
+            let matches = try context.fetch(request)
+            
+            var dict = [String: CDItem]()
+            for item in matches {
+                if let id = item.id {
+                    dict[id] = item
+                }
+            }
+            return dict
+        } catch {
+            print("CDItem.getExistIDs failed with: \(error)")
+        }
+        
+        return [:]
+    }
     
 }

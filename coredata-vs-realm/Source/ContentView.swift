@@ -31,13 +31,13 @@ struct CoreDataView: View {
     func coreDataCreate() {
         sampleItems = SampleData.generate(10000)
         Utilities.measure("Create") {
-            _ = coreDataManager.create(items: sampleItems)
+            _ = coreDataManager.upsert(items: sampleItems)
         }
     }
     
     func coreDataUpdate() {
         Utilities.measure("Update") {
-            _ = coreDataManager.update(items: sampleItems)
+            _ = coreDataManager.upsert(items: sampleItems)
         }
     }
     
